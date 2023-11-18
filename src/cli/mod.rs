@@ -11,14 +11,14 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Subgraph {
-    #[command(subcommand)]
+    #[command(about = "Build the current subgraph manifest and code")]
     Build,
 }
 
 pub async fn dispatch(subgraph: Subgraph) -> Result<()> {
     match subgraph {
         Subgraph::Build => {
-            println!("testing call");
+            println!("testing call for build");
             Ok(())
         }
     }
