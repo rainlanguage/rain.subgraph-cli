@@ -9,15 +9,21 @@ use template::SubgraphTemplate;
 /// Arguments for building the yaml file to generate the code used by subgraph
 #[derive(Debug, Parser)]
 pub struct BuildArgs {
-    /// Network that the subgraph will index
-    #[arg(short = 'N', long)]
+    /// Network that the subgraph will index (default: localhost)
+    #[arg(long)]
     pub network: Option<String>,
-    /// Block number where the subgraph will start indexing
-    #[arg(long = "block", short = 'B')]
+    /// Block number where the subgraph will start indexing (default: 0)
+    #[arg(long = "block")]
     pub block_number: Option<u64>,
-    /// Contract address that the subgraph will be indexin
-    #[arg(short = 'A', long)]
+    /// Contract address that the subgraph will be indexing (default: 0x000..000)
+    #[arg(long)]
     pub address: Option<String>,
+    /// Input subgraph template yaml that will be used to build (default: ./subgraph.template.yaml)
+    #[arg(long)]
+    pub template_path: Option<String>,
+    /// Output subgraph yaml that will be used to build (default: ./subgraph.yaml)
+    #[arg(long = "output")]
+    pub output_path: Option<String>,
 }
 
 /// Build the source for a subgraph code
@@ -43,7 +49,11 @@ pub fn build(args: BuildArgs) -> anyhow::Result<()> {
 }
 
 fn generate_subgraph_yaml(args: BuildArgs) -> anyhow::Result<()> {
-    let mut file = File::open("subgraph.template.yaml")?;
+    let template_path = args
+        .template_path
+        .unwrap_or("./subgraph.template.yaml".to_string());
+
+    let mut file = File::open(template_path)?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
@@ -75,7 +85,8 @@ fn generate_subgraph_yaml(args: BuildArgs) -> anyhow::Result<()> {
     modified_yaml = modified_yaml.replace("'\"", "'");
     modified_yaml = modified_yaml.replace("\"'", "'");
 
-    let mut modified_file = File::create("subgraph.yaml")?;
+    let output_path = args.output_path.unwrap_or("./subgraph.yaml".to_string());
+    let mut modified_file = File::create(output_path)?;
 
     modified_file.write_all(modified_yaml.as_bytes())?;
     Ok(())
