@@ -1,0 +1,18 @@
+[package]
+name = "rain_cli_subgraph"
+version = "0.0.1"
+edition = "2021"
+license = "CAL-1.0"
+description = "Rain Subgraph CLI."
+homepage = "https://github.com/rainprotocol/rain.subgraph-cli"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.70"
+clap = { version = "4.2.5", features = ["cargo", "derive"] }
+serde = { version = "1.0.160", features = ["derive"] }
+serde_yaml = "0.9.27"
+tokio = { version = "1.28.0", features = ["full"] }
+tracing = "0.1.37"
+tracing-subscriber = "0.3.17"
