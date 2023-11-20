@@ -4,7 +4,7 @@ use std::{
     process::{Command, Stdio},
     thread,
 };
-use tracing::{debug, error, info};
+use tracing::{error, info};
 
 /// Execute the command with the given arguments.
 pub fn run(main_cmd: &str, args: &[&str]) -> anyhow::Result<()> {
@@ -29,7 +29,7 @@ pub fn run(main_cmd: &str, args: &[&str]) -> anyhow::Result<()> {
         move || {
             for line in stdout_reader.lines() {
                 if let Ok(line) = line {
-                    debug!("{}", line);
+                    info!("{}", line);
                 }
             }
         }
@@ -40,7 +40,7 @@ pub fn run(main_cmd: &str, args: &[&str]) -> anyhow::Result<()> {
     for line in stderr_reader.lines() {
         match line {
             Ok(data) => {
-                debug!("{}", data);
+                info!("{}", data);
             }
             Err(err) => {
                 error!("{}", err.to_string());
