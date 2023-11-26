@@ -17,11 +17,14 @@ struct Cli {
 pub enum Subgraph {
     /// Build the current subgraph manifest
     Build(subgraph::build::BuildArgs),
+    /// Deploy the current subgraph
+    Deploy(subgraph::deploy::DeployArgs),
 }
 
 pub async fn dispatch(subgraph: Subgraph) -> Result<()> {
     match subgraph {
         Subgraph::Build(args) => subgraph::build::build(args),
+        Subgraph::Deploy(args) => subgraph::deploy::deploy(args),
     }
 }
 
