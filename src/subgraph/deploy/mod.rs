@@ -25,10 +25,10 @@ pub struct DeployArgs {
     #[arg(long, required = true)]
     pub subgraph_name: String,
     /// The subgraph endpoint URL that will be use to deploy
-    #[arg()]
+    #[arg(long)]
     pub endpoint: Option<String>,
     /// The subgraph token access that will be use to deploy
-    #[arg()]
+    #[arg(long)]
     pub token_access: Option<String>,
 }
 
@@ -67,11 +67,14 @@ pub fn deploy(args: DeployArgs) -> anyhow::Result<()> {
             if endpoint.contains("localhost") {
                 // Create node
                 let resp_create = command::run(
-                    "npx",
-                    &[&format!(
-                        "graph create --node {} {}",
-                        endpoint, &args.subgraph_name
-                    )],
+                    "bash",
+                    &[
+                        "-c",
+                        &format!(
+                            "npx graph create --node {} {}",
+                            endpoint, &args.subgraph_name
+                        ),
+                    ],
                 );
                 if resp_create.is_err() {
                     tracing::error!("{}", resp_create.err().unwrap().to_string());
@@ -92,8 +95,11 @@ pub fn deploy(args: DeployArgs) -> anyhow::Result<()> {
         None => {
             // Deploy directly (token access previusly checked)
             let resp_deploy = command::run(
-                "npx",
-                &[&format!("graph deploy --node {}", &args.subgraph_name)],
+                "bash",
+                &[
+                    "-c",
+                    &format!("npx graph deploy --node {}", &args.subgraph_name),
+                ],
             );
             if resp_deploy.is_err() {
                 tracing::error!("{}", resp_deploy.err().unwrap().to_string());
@@ -117,11 +123,14 @@ fn deploy_sg_with_endpoint(
     };
 
     let resp_deploy = command::run(
-        "npx",
-        &[&format!(
-            "npx graph deploy --node {} {} {} --version-label 1",
-            subgraph_endpoint, ipfs_url, name
-        )],
+        "bash",
+        &[
+            "-c",
+            &format!(
+                "npx graph deploy --node {} {} {} --version-label 1",
+                subgraph_endpoint, ipfs_url, name
+            ),
+        ],
     );
 
     if resp_deploy.is_err() {
