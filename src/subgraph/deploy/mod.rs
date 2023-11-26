@@ -22,7 +22,7 @@ pub struct DeployArgs {
     #[arg(long = "output")]
     pub output_path: Option<String>,
     /// The subgraph name that will be use to deploy
-    #[arg(required = true)]
+    #[arg(long, required = true)]
     pub subgraph_name: String,
     /// The subgraph endpoint URL that will be use to deploy
     #[arg()]
