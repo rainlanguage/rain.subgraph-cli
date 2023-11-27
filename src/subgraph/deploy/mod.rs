@@ -1,26 +1,9 @@
 use crate::subgraph::command;
-
-use crate::subgraph::build::{build, BuildArgs};
 use clap::Parser;
 
 /// Arguments for building the yaml file to generate the code used by subgraph
 #[derive(Debug, Parser)]
 pub struct DeployArgs {
-    /// Network that the subgraph will index (default: localhost)
-    #[arg(long, required = true)]
-    pub network: Option<String>,
-    /// Block number where the subgraph will start indexing (default: 0)
-    #[arg(long = "block", required = true)]
-    pub block_number: Option<u64>,
-    /// Contract address that the subgraph will be indexing (default: 0x000..000)
-    #[arg(long, required = true)]
-    pub address: Option<String>,
-    /// Input subgraph template yaml that will be used to build (default: ./subgraph.template.yaml)
-    #[arg(long)]
-    pub template_path: Option<String>,
-    /// Output subgraph yaml that will be used to build (default: ./subgraph.yaml)
-    #[arg(long = "output")]
-    pub output_path: Option<String>,
     /// The subgraph name that will be use to deploy
     #[arg(long, required = true)]
     pub subgraph_name: String,
@@ -33,20 +16,6 @@ pub struct DeployArgs {
 }
 
 pub fn deploy(args: DeployArgs) -> anyhow::Result<()> {
-    let build_args = BuildArgs {
-        network: args.network,
-        block_number: args.block_number,
-        address: args.address,
-        template_path: args.template_path,
-        output_path: args.output_path,
-    };
-
-    let resp_build = build(build_args);
-    if resp_build.is_err() {
-        tracing::error!("{}", resp_build.err().unwrap().to_string());
-        std::process::exit(1);
-    }
-
     // Check if token_access is present, if true - grant access
     if args.token_access.is_some() {
         let resp_auth = command::run(
