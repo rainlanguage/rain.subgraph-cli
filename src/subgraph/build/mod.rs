@@ -60,7 +60,8 @@ fn generate_subgraph_yaml(args: BuildArgs) -> anyhow::Result<()> {
     // Using a default values just to build
     let block_number = args.block_number.unwrap_or(0);
     let network = args.network.unwrap_or("localhost".to_string());
-    let address = args
+
+    let address: &str = &args
         .address
         .unwrap_or("0x0000000000000000000000000000000000000000".to_string());
 
@@ -68,7 +69,7 @@ fn generate_subgraph_yaml(args: BuildArgs) -> anyhow::Result<()> {
     // Update values in dataSources using the given arguments
     for data_source in &mut yaml_data.data_sources {
         data_source.network = network.clone();
-        data_source.source.address = Some(format!("\"{}\"", address));
+        data_source.source.address = Some(address.into());
         data_source.source.start_block = Some(block_number);
     }
 
@@ -77,13 +78,7 @@ fn generate_subgraph_yaml(args: BuildArgs) -> anyhow::Result<()> {
         template.network = network.clone();
     }
 
-    let mut modified_yaml = serde_yaml::to_string(&yaml_data)?;
-
-    // TODO: Modifiy this since when serializing the string does not add the quotes.
-    // And when the quotes are added using format! macro, then two or three quotes
-    // are added.
-    modified_yaml = modified_yaml.replace("'\"", "'");
-    modified_yaml = modified_yaml.replace("\"'", "'");
+    let modified_yaml = serde_yaml::to_string(&yaml_data)?;
 
     let output_path = args.output_path.unwrap_or("./subgraph.yaml".to_string());
     let mut modified_file = File::create(output_path)?;
