@@ -10,7 +10,7 @@ fn yaml_serialization_string_single_quotes() -> anyhow::Result<()> {
     ";
 
     // Address to change in the YAML
-    let new_address = "0xC3F675E9610e3E1f00874b1dD46BcEa6aFC57049".to_string();
+    let new_address = "0xC3F675E9610e3E1f00874b1dD46BcEa6aFC57049";
 
     #[derive(Debug, Serialize, Deserialize)]
     struct Schema {
@@ -23,7 +23,7 @@ fn yaml_serialization_string_single_quotes() -> anyhow::Result<()> {
     let mut yaml_data: Schema = serde_yaml::from_str(yaml)?;
 
     // Change the address
-    yaml_data.address = format!("'{}'", new_address);
+    yaml_data.address = new_address.into();
 
     // Serialize back to YAML text
     let yaml_resp = serde_yaml::to_string(&yaml_data)?;
