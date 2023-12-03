@@ -65,10 +65,7 @@ pub fn deploy(args: DeployArgs) -> anyhow::Result<()> {
             // Deploy directly (token access previusly checked)
             let resp_deploy = command::run(
                 "bash",
-                &[
-                    "-c",
-                    &format!("npx graph deploy --node {}", &args.subgraph_name),
-                ],
+                &["-c", &format!("npx graph deploy {}", &args.subgraph_name)],
             );
             if resp_deploy.is_err() {
                 tracing::error!("{}", resp_deploy.err().unwrap().to_string());
