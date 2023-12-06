@@ -7,7 +7,8 @@ pub struct SubgraphTemplate {
     schema: Schema,
     #[serde(rename = "dataSources")]
     pub data_sources: Vec<DataSource>,
-    pub templates: Vec<DataSource>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub templates: Option<Vec<DataSource>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
