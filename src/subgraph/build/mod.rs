@@ -1,9 +1,10 @@
 mod template;
 use crate::subgraph::command;
 
+use anyhow::anyhow;
 use clap::Parser;
 use std::fs::File;
-use std::io::{Read, Write};
+use std::io::{ErrorKind, Read, Write};
 use template::SubgraphTemplate;
 
 /// Arguments for building the yaml file to generate the code used by subgraph
@@ -53,7 +54,18 @@ fn generate_subgraph_yaml(args: BuildArgs) -> anyhow::Result<()> {
         .template_path
         .unwrap_or("./subgraph.template.yaml".to_string());
 
-    let mut file = File::open(template_path)?;
+    let file_resp = File::open(&template_path);
+
+    let mut file = match file_resp {
+        Err(error) => {
+            if error.kind() == ErrorKind::NotFound {
+                return Err(anyhow!("subgraph template yaml file not found - {}", error));
+            }
+            return Err(error.into());
+        }
+        Ok(data) => data,
+    };
+
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
