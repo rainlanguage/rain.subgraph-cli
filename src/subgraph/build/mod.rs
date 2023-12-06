@@ -73,9 +73,11 @@ fn generate_subgraph_yaml(args: BuildArgs) -> anyhow::Result<()> {
         data_source.source.start_block = Some(block_number);
     }
 
-    // Update values in templates using the given arguments
-    for template in &mut yaml_data.templates {
-        template.network = network.clone();
+    // Update values in templates using the given arguments if the yaml have templates
+    if let Some(templates) = &mut yaml_data.templates {
+        for template in templates {
+            template.network = network.clone();
+        }
     }
 
     let modified_yaml = serde_yaml::to_string(&yaml_data)?;
